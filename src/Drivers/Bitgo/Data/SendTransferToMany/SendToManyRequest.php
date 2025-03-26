@@ -1,8 +1,8 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\SendTransferToMany;
+namespace ManiSystems\CryptoWallet\Drivers\Bitgo\Data\SendTransferToMany;
 
-use Spatie\LaravelData\Data;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\Data;
 
 class SendToManyRequest extends Data
 {
@@ -14,48 +14,46 @@ class SendToManyRequest extends Data
      * @param  array|null  $stakingOptions  ['amount' => int|string, 'validator' => string]
      * @param  array|null  $reservation  ['expireTime' => string]
      */
-    public function __construct(
-        public readonly array $recipients,
-        public readonly ?string $otp = null,
-        public readonly ?string $walletPassphrase = null,
-        public readonly ?string $prv = null,
-        public readonly ?string $type = null,
-        public readonly ?int $numBlocks = null,
-        public readonly int|string|null $feeRate = null,
-        public readonly int|string|null $maxFeeRate = null,
-        public readonly float|string|null $feeMultiplier = null,
-        public readonly ?int $minConfirms = null,
-        public readonly ?bool $enforceMinConfirmsForChange = null,
-        public readonly int|string|null $gasPrice = null,
-        public readonly ?array $eip1559 = null,
-        public readonly int|string|null $gasLimit = null,
-        public readonly ?int $targetWalletUnspents = null,
-        public readonly int|string|null $minValue = null,
-        public readonly int|string|null $maxValue = null,
-        public readonly ?string $sequenceId = null,
-        public readonly ?string $nonce = null,
-        public readonly ?bool $noSplitChange = null,
-        public readonly ?array $unspents = null,
-        public readonly ?string $changeAddress = null,
-        public readonly ?string $txFormat = null,
-        public readonly ?bool $instant = null,
-        public readonly ?array $memo = null,
-        public readonly ?string $comment = null,
-        public readonly ?string $destinationChain = null,
-        public readonly ?string $sourceChain = null,
-        public readonly string|array|null $changeAddressType = null,
-        public readonly ?string $startTime = null,
-        public readonly ?string $consolidateId = null,
-        public readonly ?int $lastLedgerSequence = null,
-        public readonly ?int $ledgerSequenceDelta = null,
-        public readonly ?array $rbfTxIds = null,
-        public readonly ?bool $isReplaceableByFee = null,
-        public readonly ?int $validFromBlock = null,
-        public readonly ?int $validToBlock = null,
-        public readonly ?array $trustlines = null,
-        public readonly ?array $stakingOptions = null,
-        public readonly ?string $messageKey = null,
-        public readonly ?array $reservation = null,
-        public readonly ?string $data = null
-    ) {}
+    public readonly array $recipients;
+    public readonly ?string $otp;
+    public readonly ?string $walletPassphrase;
+    public readonly ?string $prv;
+    public readonly ?string $type;
+    public readonly ?int $numBlocks;
+    public readonly int|string|null $feeRate;
+    public readonly int|string|null $maxFeeRate;
+    public readonly float|string|null $feeMultiplier;
+    public readonly ?int $minConfirms;
+    public readonly ?bool $enforceMinConfirmsForChange;
+    public readonly int|string|null $gasPrice;
+    public readonly ?array $eip1559;
+    public readonly int|string|null $gasLimit;
+    public readonly ?int $targetWalletUnspents;
+    public readonly int|string|null $minValue;
+    public readonly int|string|null $maxValue;
+    public readonly ?string $sequenceId;
+    public readonly ?string $nonce;
+    public readonly ?bool $noSplitChange;
+    public readonly ?array $unspents;
+    public readonly ?string $changeAddress;
+    public readonly ?string $txFormat;
+    public readonly ?bool $instant;
+    public readonly ?array $memo;
+    public readonly ?string $comment;
+    public readonly ?string $destinationChain;
+    public readonly ?string $sourceChain;
+    public readonly string|array|null $changeAddressType;
+    public readonly ?string $startTime;
+    public readonly ?string $consolidateId;
+    public readonly ?int $lastLedgerSequence;
+    public readonly ?int $ledgerSequenceDelta;
+    public readonly ?array $rbfTxIds;
+    public readonly ?bool $isReplaceableByFee;
+    public readonly ?int $validFromBlock;
+    public readonly ?int $validToBlock;
+    public readonly ?array $trustlines;
+    public readonly ?array $stakingOptions;
+    public readonly ?string $messageKey;
+    public readonly ?array $reservation;
+    public readonly ?string $data;
 }

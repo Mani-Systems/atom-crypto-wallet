@@ -1,8 +1,8 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\Address;
+namespace ManiSystems\CryptoWallet\Drivers\Bitgo\Data\Address;
 
-use Spatie\LaravelData\Data;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\Data;
 
 class KeyChain extends Data
 {

@@ -1,5 +1,5 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Drivers\Bitgo\Data;
+namespace ManiSystems\CryptoWallet\Drivers\Bitgo\Data;
 
 class UserKeyChain extends Keychain {}

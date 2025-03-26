@@ -12,7 +12,7 @@ return [
             | API calls. This is useful for testing purposes.
             |
             */
-            'use_mocks' => env('BITGO_USE_MOCKS', false),
+            'use_mocks' => env('BITGO_USE_MOCKS', true),
 
             /*
             |--------------------------------------------------------------------------

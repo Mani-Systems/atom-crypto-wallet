@@ -1,6 +1,6 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Drivers\Bitgo\Contracts;
+namespace ManiSystems\CryptoWallet\Drivers\Bitgo\Contracts;
 
 interface ExchangeRateContract
 {

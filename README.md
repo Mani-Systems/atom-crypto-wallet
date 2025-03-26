@@ -41,7 +41,7 @@ The package uses a clear, fluent API and is fully testable, making it simpler to
 1. **Install via Composer**:
 
 ```bash
-composer require redberryproducts/laravel-crypto-wallet
+composer require manisystems/laravel-crypto-wallet
 ```
 
 ## Bitgo Express Docker
@@ -97,7 +97,7 @@ All Bitgo functionality is encapsulated within the **Bitgo** driver, which is us
 The core entry point for all wallet-related activities is the `WalletManager` class. You can call static methods (like `bitgo()`) to instantiate a specific driver. For example:
 
 ```php
-use RedberryProducts\CryptoWallet\WalletManager;
+use ManiSystems\CryptoWallet\WalletManager;
 
 $wallet = WalletManager::bitgo();
 ```
@@ -151,8 +151,8 @@ $transfers = WalletManager::bitgo(coin: 'tbtc', walletId: 'wallet-id')
 **Send to multiple recipients:**
 
 ```php
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\SendTransferToMany\SendToManyRequest;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\SendTransferToMany\Recipient;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\SendTransferToMany\SendToManyRequest;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\SendTransferToMany\Recipient;
 
 $sendTransferData = new SendToManyRequest(
     recipients: [
@@ -215,7 +215,7 @@ Currently, we provide a **Bitgo** driver implementation.
 ### Fetch All Exchange Rates
 
 ```php
-use RedberryProducts\CryptoWallet\ExchangeRateManager;
+use ManiSystems\CryptoWallet\ExchangeRateManager;
 
 $rates = ExchangeRateManager::bitgo()->all();
 ```
@@ -223,7 +223,7 @@ $rates = ExchangeRateManager::bitgo()->all();
 ### Fetch Exchange Rates for a Specific Coin
 
 ```php
-use RedberryProducts\CryptoWallet\ExchangeRateManager;
+use ManiSystems\CryptoWallet\ExchangeRateManager;
 
 $tbtcRates = ExchangeRateManager::bitgo()->getByCoin('tbtc');
 ```

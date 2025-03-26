@@ -1,9 +1,9 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet;
+namespace ManiSystems\CryptoWallet;
 
-use Illuminate\Support\ServiceProvider;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Modules\Wallet;
+use Eyika\Atom\Framework\Foundation\ServiceProvider;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Modules\Wallet;
 
 /**
  * CryptoWalletServiceProvider is the service provider for the Bitgo Wallet package.
@@ -15,10 +15,10 @@ class CryptoWalletServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/crypto-wallet.php',
-            'crypto-wallet'
-        );
+        // $this->mergeConfigFrom(
+        //     __DIR__.'/../config/crypto-wallet.php',
+        //     'crypto-wallet'
+        // );
     }
 
     /**

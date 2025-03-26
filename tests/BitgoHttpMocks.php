@@ -1,8 +1,10 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Tests;
+namespace ManiSystems\CryptoWallet\Tests;
 
-use Illuminate\Support\Facades\Http;
+use Eyika\Atom\Framework\Support\Facade\Http;
+
+// use Illuminate\Support\Facades\Http;
 
 trait BitgoHttpMocks
 {
@@ -227,9 +229,9 @@ trait BitgoHttpMocks
             "{$expressUrl}tbtc/wallet/wallet-id/webhooks" => Http::response($webhookMock),
             "{$expressUrl}ping" => Http::response([]),
             "{$testingUrl}ping" => Http::response([]),
-            "{$testingUrl}user/me" => Http::response([
+            "{$testingUrl}user/me" => function () { info('me route called'); return Http::response([
                 'user' => 'fake',
-            ]),
+            ]); },
             "{$expressUrl}tbtc/wallet/wallet-id/sendmany" => Http::response([]),
             "{$expressUrl}tbtc/wallet/wallet-id/consolidateunspents" => Http::response([]),
         ]);

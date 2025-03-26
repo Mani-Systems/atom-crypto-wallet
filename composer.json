@@ -1,53 +1,45 @@
 {
-    "name": "redberryproducts/laravel-crypto-wallet",
-    "description": "blockchain service integration for laravel",
+    "name": "mani-systems/laravel-crypto-wallet",
+    "description": "blockchain service integration for atom php framework",
     "keywords": [
         "bitgo",
         "wallet",
         "crypto",
         "khomeriki",
-        "laravel"
+        "laravel",
+        "atom"
     ],
-    "homepage": "https://github.com/RedberryProducts/laravel-crypto-wallet",
+    "homepage": "https://github.com/Mani-Systems/atom-crypto-wallet",
     "license": "MIT",
     "authors": [
         {
-            "name": "k.khomeriki",
-            "role": "Developer"
+            "name": "Abdulbasit",
+            "role": "Mamman"
         }
     ],
     "require": {
         "php": ">=8.1",
         "ext-readline": "*",
-        "guzzlehttp/guzzle": ">=7.4",
-        "illuminate/contracts": ">=9.0",
-        "illuminate/support": ">=9.11",
-        "spatie/laravel-data": "^4.11",
-        "spatie/laravel-package-tools": ">=1.9.2"
+        "eyika/atom-framework": "dev-dev",
+        "guzzlehttp/guzzle": ">=7.4"
     },
     "require-dev": {
         "jetbrains/phpstorm-attributes": ">=1.0",
-        "laravel/pint": "^1.1",
         "launchdarkly/launchdarkly-php": ">=4.2",
         "nunomaduro/collision": ">=6.0",
-        "nunomaduro/larastan": ">=2.0.1",
-        "orchestra/testbench": ">=7.4",
-        "pestphp/pest": ">=1.21",
-        "pestphp/pest-plugin-laravel": ">=1.1",
         "phpstan/extension-installer": ">=1.1",
         "phpstan/phpstan-deprecation-rules": ">=1.0",
         "phpstan/phpstan-phpunit": ">=1.0",
-        "phpunit/phpunit": ">=9.5",
-        "spatie/laravel-ray": ">=1.26"
+        "phpunit/phpunit": ">=12.0"
     },
     "autoload": {
         "psr-4": {
-            "RedberryProducts\\CryptoWallet\\": "src"
+            "ManiSystems\\CryptoWallet\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "RedberryProducts\\CryptoWallet\\Tests\\": "tests"
+            "ManiSystems\\CryptoWallet\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -63,12 +55,12 @@
         }
     },
     "extra": {
-        "laravel": {
+        "atom": {
             "providers": [
-                "RedberryProducts\\CryptoWallet\\CryptoWalletServiceProvider"
+                "ManiSystems\\CryptoWallet\\CryptoWalletServiceProvider"
             ],
             "aliases": {
-                "Wallet": "RedberryProducts\\CryptoWallet\\Facades\\Wallet"
+                "Wallet": "ManiSystems\\CryptoWallet\\Facades\\Wallet"
             }
         }
     }

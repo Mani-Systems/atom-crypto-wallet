@@ -1,8 +1,8 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\SendTransferToMany;
+namespace ManiSystems\CryptoWallet\Drivers\Bitgo\Data\SendTransferToMany;
 
-use Spatie\LaravelData\Data;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\Data;
 
 class TokenData extends Data
 {

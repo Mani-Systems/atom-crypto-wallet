@@ -1,6 +1,6 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Drivers\Bitgo\Exceptions;
+namespace ManiSystems\CryptoWallet\Drivers\Bitgo\Exceptions;
 
 use Exception;
 

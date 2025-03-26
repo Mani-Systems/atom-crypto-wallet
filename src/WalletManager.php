@@ -1,8 +1,8 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet;
+namespace ManiSystems\CryptoWallet;
 
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Modules\Wallet;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Modules\Wallet;
 
 class WalletManager
 {

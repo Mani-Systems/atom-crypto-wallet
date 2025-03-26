@@ -1,14 +1,15 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Tests;
+namespace ManiSystems\CryptoWallet\Tests;
 
-use Orchestra\Testbench\TestCase as Orchestra;
-use RedberryProducts\CryptoWallet\CryptoWalletServiceProvider;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\BitgoClient;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Contracts\WalletContract;
-use Spatie\LaravelData\LaravelDataServiceProvider;
+use Eyika\Atom\Framework\Support\TestCase as BaseTestCase;
+// use Orchestra\Testbench\TestCase as Orchestra;
+use ManiSystems\CryptoWallet\CryptoWalletServiceProvider;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\BitgoClient;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Contracts\WalletContract;
+// use Spatie\LaravelData\LaravelDataServiceProvider;
 
-class TestCase extends Orchestra
+class TestCase extends BaseTestCase
 {
     use BitgoHttpMocks;
 
@@ -29,13 +30,12 @@ class TestCase extends Orchestra
     {
         return [
             CryptoWalletServiceProvider::class,
-            LaravelDataServiceProvider::class,
-
+            // LaravelDataServiceProvider::class,
         ];
     }
 
     public function getEnvironmentSetUp($app): void
     {
-        config()->set('database.default', 'testing');
+        // config()->set('database.default', 'testing');
     }
 }

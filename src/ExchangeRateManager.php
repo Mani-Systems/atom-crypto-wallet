@@ -1,8 +1,8 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet;
+namespace ManiSystems\CryptoWallet;
 
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Modules\ExchangeRate;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Modules\ExchangeRate;
 
 class ExchangeRateManager
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Drivers\Bitgo\Contracts;
+namespace ManiSystems\CryptoWallet\Drivers\Bitgo\Contracts;
 
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\Address\Address;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\MaximumSpendable;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\SendTransferToMany\SendToManyRequest;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\Transfer;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\Wallet as WalletDto;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\WebhookData;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\Address\Address;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\MaximumSpendable;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\SendTransferToMany\SendToManyRequest;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\Transfer;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\Wallet as WalletDto;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\WebhookData;
 
 interface WalletContract
 {

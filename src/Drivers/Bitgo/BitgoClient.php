@@ -1,12 +1,12 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Drivers\Bitgo;
+namespace ManiSystems\CryptoWallet\Drivers\Bitgo;
 
-use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Http\Client\PendingRequest;
-use Illuminate\Http\Client\Response;
-use Illuminate\Support\Facades\Http;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Exceptions\BitgoGatewayException;
+use Eyika\Atom\Framework\Http\Client\ConnectionException;
+use Eyika\Atom\Framework\Http\Client\PendingRequest;
+use Eyika\Atom\Framework\Http\Client\Response;
+use Eyika\Atom\Framework\Support\Facade\Http;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Exceptions\BitgoGatewayException;
 
 class BitgoClient
 {

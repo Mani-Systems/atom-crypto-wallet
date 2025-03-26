@@ -1,21 +1,20 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Drivers\Bitgo\Modules;
+namespace ManiSystems\CryptoWallet\Drivers\Bitgo\Modules;
 
-use Illuminate\Http\Client\ConnectionException;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\BitgoClient;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Contracts\WalletContract;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\Address\Address;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\BackupKeyChain;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\BitGoKeychain;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\MaximumSpendable;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\SendTransferToMany\SendToManyRequest;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\Transfer;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\UserKeyChain;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\Wallet as WalletDto;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\WalletData;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\WebhookData;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Exceptions\BitgoGatewayException;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\BitgoClient;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Contracts\WalletContract;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\Address\Address;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\BackupKeyChain;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\BitGoKeychain;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\MaximumSpendable;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\SendTransferToMany\SendToManyRequest;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\Transfer;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\UserKeyChain;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\Wallet as WalletDto;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\WalletData;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Data\WebhookData;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Exceptions\BitgoGatewayException;
 
 class Wallet extends WalletDto implements WalletContract
 {
@@ -126,7 +125,7 @@ class Wallet extends WalletDto implements WalletContract
         $wallets = $this->client->getAllWallets($coin, $params);
 
         return array_map(function ($element) {
-            return \RedberryProducts\CryptoWallet\Drivers\Bitgo\Data\Wallet::from($element);
+            return \ManiSystems\CryptoWallet\Drivers\Bitgo\Data\Wallet::from($element);
         }, $wallets['wallets']);
     }
 

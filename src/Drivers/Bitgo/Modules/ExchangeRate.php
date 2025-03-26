@@ -1,20 +1,18 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Drivers\Bitgo\Modules;
+namespace ManiSystems\CryptoWallet\Drivers\Bitgo\Modules;
 
-use Illuminate\Config\Repository;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Support\Arr;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\BitgoClient;
-use RedberryProducts\CryptoWallet\Drivers\Bitgo\Exceptions\BitgoGatewayException;
+use Eyika\Atom\Framework\Http\Client\ConnectionException;
+use Eyika\Atom\Framework\Support\Arr;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\BitgoClient;
+use ManiSystems\CryptoWallet\Drivers\Bitgo\Exceptions\BitgoGatewayException;
 
 class ExchangeRate
 {
     protected BitgoClient $client;
 
     /**
-     * @var Repository|Application|mixed
+     * @var string
      */
     protected mixed $coin;
 

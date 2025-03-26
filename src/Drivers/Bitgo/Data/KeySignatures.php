@@ -1,8 +1,6 @@
 <?php
 
-namespace RedberryProducts\CryptoWallet\Drivers\Bitgo\Data;
-
-use Spatie\LaravelData\Data;
+namespace ManiSystems\CryptoWallet\Drivers\Bitgo\Data;
 
 class KeySignatures extends Data
 {
