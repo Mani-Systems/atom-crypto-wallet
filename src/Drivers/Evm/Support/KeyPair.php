@@ -22,10 +22,23 @@ final class KeyPair
     /** The order of the secp256k1 curve. A valid private key is in [1, n-1]. */
     private const CURVE_ORDER = '115792089237316195423570985008687907852837564279074904382605163141518161494337';
 
+    /**
+     * Secrets live OUTSIDE the object, keyed by instance.
+     *
+     * A private property is still a property: var_export() ignores __debugInfo() and prints
+     * it verbatim, and so do serialize(), json_encode() on a cast, and several logger
+     * "dump the context" paths. Holding the key in a WeakMap means the object genuinely has
+     * no field containing it, so there is nothing for those to find. The entry is collected
+     * with the instance, so this does not leak memory.
+     */
+    private static ?\WeakMap $secrets = null;
+
     private function __construct(
-        #[SensitiveParameter] private readonly string $privateKey,
+        #[SensitiveParameter] string $privateKey,
         private readonly string $address,
     ) {
+        self::$secrets ??= new \WeakMap();
+        self::$secrets[$this] = $privateKey;
     }
 
     /**
@@ -59,7 +72,7 @@ final class KeyPair
     /** Hex private key, no 0x prefix. Treat as a secret: never log it. */
     public function privateKey(): string
     {
-        return $this->privateKey;
+        return self::$secrets[$this];
     }
 
     /** EIP-55 checksummed address. */
@@ -157,6 +170,12 @@ final class KeyPair
     {
         return ['address' => $this->address, 'privateKey' => '[redacted]'];
     }
+
+    /**
+     * var_export() has no interception hook, so the only defence is the WeakMap above --
+     * it can export nothing it cannot see. This is here to say that out loud, because the
+     * obvious "private property plus __debugInfo" version of this class leaks.
+     */
 
     public function __serialize(): array
     {

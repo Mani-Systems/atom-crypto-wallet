@@ -19,7 +19,7 @@
     ],
     "require": {
         "ext-readline": "*",
-        "eyika/atom-framework": "dev-dev",
+        "eyika/atom-framework": "*",
         "guzzlehttp/guzzle": ">=7.4",
         "kornrunner/ethereum-offline-raw-tx": "^0.9",
         "kornrunner/keccak": "^1.1",
