@@ -56,7 +56,9 @@ return [
                 ],
                 'polygon' => [
                     'chain_id' => 137,
-                    'rpc'      => env('EVM_RPC_POLYGON', 'https://polygon-rpc.com'),
+                    // polygon-rpc.com now answers 401 ("API key disabled, tenant disabled"),
+                    // so it is no longer a usable default.
+                    'rpc'      => env('EVM_RPC_POLYGON', 'https://polygon-bor-rpc.publicnode.com'),
                     'explorer' => 'https://polygonscan.com',
                 ],
                 'arbitrum-one' => [
