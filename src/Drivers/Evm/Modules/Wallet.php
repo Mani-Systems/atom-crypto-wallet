@@ -172,6 +172,105 @@ class Wallet
     }
 
     /**
+     * Send the chain's native coin (ETH on Base, MATIC on Polygon, BNB on BSC).
+     *
+     * Exists so an operator can fund a user's wallet with the gas it needs to move its own
+     * tokens. A wallet holding only USDC cannot spend it: gas is paid in the native coin, so
+     * a freshly funded wallet is stuck until someone puts a few cents of it there.
+     *
+     * $amountWei is a decimal STRING of wei, not a float. 1 ETH is 1e18 and PHP_INT_MAX is
+     * ~9.2e18, so anything that goes near a float or an int here is one order of magnitude
+     * away from being wrong.
+     */
+    public function transferNative(
+        #[SensitiveParameter] string $privateKey,
+        string $to,
+        string $amountWei,
+    ): SentTransaction {
+        $client = $this->client();
+        $client->assertChainId();
+
+        if (! KeyPair::isValidAddress($to)) {
+            throw new InvalidArgumentException("Refusing to send to a malformed address: {$to}");
+        }
+
+        if (! preg_match('/^[0-9]+$/', $amountWei)) {
+            throw new InvalidArgumentException("Native amount must be an integer wei string, got: {$amountWei}");
+        }
+
+        $keys = KeyPair::fromPrivateKey($privateKey);
+        $from = $keys->address();
+
+        // A plain value transfer is always 21000 gas; there is no code to run. Estimating it
+        // would be a needless round trip, and some nodes reject estimateGas from an
+        // unfunded sender anyway -- which is exactly the case this method exists to fix.
+        $gasLimit = 21000;
+        [$maxFee, $tip] = $this->feeParameters($client);
+
+        $required = gmp_add(
+            gmp_init($amountWei, 10),
+            gmp_mul(gmp_init((string) $gasLimit, 10), gmp_init($maxFee, 10))
+        );
+        $balance = gmp_init($client->nativeBalance($from), 10);
+
+        if (gmp_cmp($balance, $required) < 0) {
+            throw new InvalidArgumentException(sprintf(
+                'Treasury %s cannot cover %s wei plus gas on %s: holds %s wei, needs %s wei.',
+                $from,
+                $amountWei,
+                $this->networkName,
+                gmp_strval($balance),
+                gmp_strval($required)
+            ));
+        }
+
+        $transaction = new EIP1559Transaction(
+            $this->toHex($client->nextNonce($from)),
+            $this->toHex($tip),
+            $this->toHex($maxFee),
+            $this->toHex($gasLimit),
+            $to,
+            $this->toHex($amountWei),
+            ''                      // no calldata: a bare value transfer
+        );
+
+        $hash = $client->sendRawTransaction($transaction->getRaw($keys->privateKey(), $this->network['chain_id']));
+
+        return new SentTransaction(
+            hash: $hash,
+            from: $from,
+            to: $to,
+            token: $this->network['native_symbol'] ?? 'native',
+            amount: $amountWei,
+            baseUnits: $amountWei,
+            network: $this->networkName,
+            explorerUrl: rtrim($this->network['explorer'] ?? '', '/') . '/tx/' . $hash,
+        );
+    }
+
+    /**
+     * What a token transfer from this address would cost in gas right now, in wei.
+     *
+     * Used to decide whether a wallet needs topping up, and by how much, without having to
+     * guess a fixed figure that is wrong on every chain but one.
+     */
+    public function estimatedTransferGasCost(string $address, string $symbol): string
+    {
+        $token = $this->token($symbol);
+        $client = $this->client();
+
+        // Estimate against a zero-value transfer to self: same shape, no funds move, and it
+        // works for a wallet whose token balance is still zero.
+        $gasLimit = $this->paddedGasLimit(
+            $client->estimateGas($address, $token['address'], Erc20::transfer($address, '0'))
+        );
+
+        [$maxFee] = $this->feeParameters($client);
+
+        return gmp_strval(gmp_mul(gmp_init((string) $gasLimit, 10), gmp_init($maxFee, 10)));
+    }
+
+    /**
      * Largest amount of $symbol that can be sent, given the gas this transfer will cost.
      *
      * For an ERC-20 the gas is paid in the native coin, so the token balance is spendable in

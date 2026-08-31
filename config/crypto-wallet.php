@@ -115,6 +115,59 @@ return [
             |
             */
 
+            /*
+            |------------------------------------------------------------------
+            | Gas Station
+            |------------------------------------------------------------------
+            |
+            | Gas on an EVM chain is paid in the chain's NATIVE coin, never in the token
+            | being sent. So a user who funds their wallet with USDC cannot spend it: the
+            | wallet holds tokens and no ETH, and every transfer is refused. Making them go
+            | and buy ETH first is exactly the friction this product exists to remove, so
+            | Mani covers it from a treasury wallet.
+            |
+            | On Base this is fractions of a cent per wallet, which is why sending real coin
+            | beats ERC-4337 paymaster infrastructure here -- a paymaster earns its
+            | complexity when wallets are user-custodied, and these are not.
+            |
+            | THE TREASURY KEY IS THE MOST SENSITIVE VALUE IN THIS APPLICATION. It is a hot
+            | wallet: anything that reads it can empty it. Keep the balance small and topped
+            | up deliberately, never so large that losing it costs more than the downtime.
+            | Disabled by default -- it must be switched on knowingly.
+            |
+            */
+
+            'gas_station' => [
+                'enabled' => (bool) env('EVM_GAS_STATION_ENABLED', false),
+
+                // Shared treasury key, used when no per-network key is set.
+                'key' => env('EVM_GAS_TREASURY_KEY'),
+
+                // Per-network keys, so one chain's treasury can be rotated or drained
+                // without touching the others.
+                'keys' => [
+                    'base'            => env('EVM_GAS_TREASURY_KEY_BASE'),
+                    'polygon'         => env('EVM_GAS_TREASURY_KEY_POLYGON'),
+                    'arbitrum-one'    => env('EVM_GAS_TREASURY_KEY_ARBITRUM'),
+                    'bnb-smart-chain' => env('EVM_GAS_TREASURY_KEY_BSC'),
+                    'celo'            => env('EVM_GAS_TREASURY_KEY_CELO'),
+                    'ethereum'        => env('EVM_GAS_TREASURY_KEY_ETHEREUM'),
+                    'lisk'            => env('EVM_GAS_TREASURY_KEY_LISK'),
+                ],
+
+                // Transfers one top-up should cover. Above 1 because each top-up is itself
+                // a transaction the treasury pays gas for, so funding per spend doubles the
+                // bill. Not high either: coin sent to a user wallet cannot be recovered
+                // without another transfer.
+                'transfers_per_topup' => (int) env('EVM_GAS_TRANSFERS_PER_TOPUP', 3),
+
+                // Hard ceiling on a single top-up, in wei. A misconfigured multiplier or a
+                // gas spike would otherwise let one call move an unbounded amount out of a
+                // hot wallet; this turns that into a failed top-up instead. Default is
+                // 0.001 ETH, which is generous on an L2 and trivial to lose.
+                'max_topup_wei' => env('EVM_GAS_MAX_TOPUP_WEI', '1000000000000000'),
+            ],
+
             'gas' => [
                 'tip_multiplier'           => (float) env('EVM_GAS_TIP_MULTIPLIER', 1.2),
                 'base_fee_multiplier'      => (float) env('EVM_GAS_BASE_FEE_MULTIPLIER', 2.0),
