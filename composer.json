@@ -47,8 +47,9 @@
     },
     "scripts": {
         "analyse": "vendor/bin/phpstan analyse",
-        "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest --coverage"
+        "test": "vendor/bin/phpunit --testsuite Unit --no-coverage",
+        "test-coverage": "vendor/bin/phpunit --testsuite Unit",
+        "test-integration": "vendor/bin/phpunit --testsuite Integration --no-coverage"
     },
     "config": {
         "sort-packages": true,

@@ -218,4 +218,91 @@ class EvmWalletTest extends TestCase
         $this->assertSame(2 + 8 + 64 + 64, strlen($data));
         $this->assertStringEndsWith(str_pad(dechex(12_340_000), 64, '0', STR_PAD_LEFT), $data);
     }
+
+    // --- reading logs ---------------------------------------------------------
+
+    public function test_the_transfer_topic_matches_the_canonical_hash(): void
+    {
+        // Derived rather than pasted. The well-known constant is easy to get one character
+        // wrong, and a filter with a wrong topic does not error -- it matches nothing,
+        // forever, silently. This pins the derivation against the published value.
+        $this->assertSame(
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+            Erc20::transferEventTopic()
+        );
+    }
+
+    public function test_an_address_topic_is_left_padded_to_32_bytes(): void
+    {
+        // A 20-byte address in a 32-byte topic slot matches nothing and reports no error,
+        // which is the worst possible combination for a deposit scanner.
+        $topic = EvmClient::topicForAddress('0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B');
+
+        $this->assertSame(66, strlen($topic));
+        $this->assertSame(
+            '0x000000000000000000000000ab5801a7d398351b8be11c439e05c5b3259aec9b',
+            $topic
+        );
+    }
+
+    public function test_an_address_survives_a_round_trip_through_a_topic(): void
+    {
+        $address = '0xab5801a7d398351b8be11c439e05c5b3259aec9b';
+
+        $this->assertSame($address, Erc20::addressFromTopic(EvmClient::topicForAddress($address)));
+    }
+
+    public function test_a_transfer_value_is_decoded_without_losing_precision(): void
+    {
+        // hexdec() returns a FLOAT above PHP_INT_MAX and quietly loses digits, which for an
+        // 18-decimal token is most real amounts. This is a little over 1000 tokens at 18dp.
+        $data = '0x000000000000000000000000000000000000000000000036356633bd1e2d2000';
+
+        $this->assertSame('1000000000000000000000', Erc20::decodeTransferValue(
+            '0x00000000000000000000000000000000000000000000003635c9adc5dea00000'
+        ));
+
+        // And a small one, at 6 decimals.
+        $this->assertSame('1000000', Erc20::decodeTransferValue(
+            '0x00000000000000000000000000000000000000000000000000000000000f4240'
+        ));
+
+        // Zero is zero, not an empty string.
+        $this->assertSame('0', Erc20::decodeTransferValue('0x' . str_repeat('0', 64)));
+    }
+
+    public function test_get_logs_asks_for_the_range_and_topics_it_was_given(): void
+    {
+        // The request shape is the whole point: one call covering every address, via a topic
+        // array the node treats as OR. Getting this wrong means either a request per address
+        // or a filter that matches nothing.
+        $container = [];
+        $history = \GuzzleHttp\Middleware::history($container);
+
+        $stack = HandlerStack::create(new MockHandler([
+            new Response(200, [], json_encode(['jsonrpc' => '2.0', 'id' => 1, 'result' => []])),
+        ]));
+        $stack->push($history);
+
+        $client = new EvmClient('http://stub', self::BASE_CHAIN_ID, new Client(['handler' => $stack]), 0);
+
+        $client->getLogs(100, 200, '0xtoken', [Erc20::transferEventTopic(), null, ['0xtopicA', '0xtopicB']]);
+
+        $sent = json_decode((string) $container[0]['request']->getBody(), true);
+        $filter = $sent['params'][0];
+
+        $this->assertSame('eth_getLogs', $sent['method']);
+        $this->assertSame('0x64', $filter['fromBlock']);
+        $this->assertSame('0xc8', $filter['toBlock']);
+        $this->assertSame('0xtoken', $filter['address']);
+        $this->assertSame(['0xtopicA', '0xtopicB'], $filter['topics'][2]);
+        // The second position stays null -- constraining `from` would drop every deposit that
+        // did not come from one named sender.
+        $this->assertNull($filter['topics'][1]);
+    }
+
+    public function test_the_head_block_is_returned_as_an_integer(): void
+    {
+        $this->assertSame(19088743, $this->clientReturning(['0x1234567'])->blockNumber());
+    }
 }
