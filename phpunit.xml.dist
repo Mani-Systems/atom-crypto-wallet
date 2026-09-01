@@ -18,9 +18,25 @@
     beStrictAboutOutputDuringTests="true"
     verbose="true"
 >
+    <!--
+        Two suites, because they need different things to run.
+
+        Unit is hermetic: every RPC response is a Guzzle MockHandler, so it runs anywhere and
+        is what `composer test` runs. Integration talks to BitGo's Express service and needs
+        credentials and a framework application context; without those it does not fail
+        usefully, it fails with "Base namespace could not be determined" seventeen times.
+
+        They used to be one suite pointed at tests/, which also swept up tests/Pest.php, a
+        leftover Pest scaffold calling uses(): a function that does not exist here because
+        Pest is not a dependency. That fataled during discovery and the whole run reported
+        "No tests executed", so nothing in this package had run for some time.
+    -->
     <testsuites>
-        <testsuite name="VendorName Test Suite">
-            <directory>tests</directory>
+        <testsuite name="Unit">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
         </testsuite>
     </testsuites>
     <coverage>

@@ -43,6 +43,49 @@ final class Erc20
     }
 
     /**
+     * The topic0 of the ERC-20 Transfer event.
+     *
+     * The full 32-byte hash, not the 4-byte selector: a function selector is truncated, an
+     * event topic is not. Derived from the canonical signature for the same reason selectors
+     * are -- the well-known constant is easy to paste in one character wrong, and a filter
+     * with a wrong topic does not error. It matches nothing, forever, silently.
+     */
+    public static function transferEventTopic(): string
+    {
+        return '0x' . Keccak::hash('Transfer(address,address,uint256)', 256);
+    }
+
+    /**
+     * The amount out of a Transfer log, as a decimal string.
+     *
+     * `value` is the only non-indexed parameter, so it is the whole of `data` rather than a
+     * topic. Returned as a string: a USDC amount fits in an int, but the same log shape
+     * carries 18-decimal tokens whose base units overflow one.
+     */
+    public static function decodeTransferValue(string $data): string
+    {
+        $hex = ltrim(str_starts_with($data, '0x') ? substr($data, 2) : $data, '0');
+
+        if ($hex === '') {
+            return '0';
+        }
+
+        // gmp, not hexdec(): hexdec() returns a float above PHP_INT_MAX and silently loses
+        // precision, which for 18-decimal tokens is most real amounts.
+        return gmp_strval(gmp_init($hex, 16), 10);
+    }
+
+    /**
+     * The address out of a 32-byte log topic.
+     *
+     * The inverse of the left-padding in encodeAddress(): the low 20 bytes are the address.
+     */
+    public static function addressFromTopic(string $topic): string
+    {
+        return '0x' . substr(str_starts_with($topic, '0x') ? substr($topic, 2) : $topic, -40);
+    }
+
+    /**
      * Addresses are left-padded to 32 bytes. The high 12 bytes MUST be zero -- anything
      * else is a malformed address, and silently truncating it would send to the wrong place.
      */

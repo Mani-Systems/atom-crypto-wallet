@@ -129,6 +129,61 @@ class EvmClient
         ]);
     }
 
+    /** The head block number, as an integer. */
+    public function blockNumber(): int
+    {
+        return (int) hexdec($this->request('eth_blockNumber'));
+    }
+
+    /**
+     * Event logs in a block range.
+     *
+     * Reading, not writing, but the shape of the request is what makes this usable at all.
+     * `topics` is positional and each position accepts an ARRAY, which the node treats as OR:
+     *
+     *     [$transferTopic, null, [$addrA, $addrB, ...]]
+     *
+     * asks for "Transfer events whose third topic is any of these addresses" in ONE call, for
+     * every address at once. Filtering client-side instead would mean a request per address
+     * and a bill that grows with the user table; done this way the cost grows with the number
+     * of chains, which is a number you choose.
+     *
+     * Topics are 32 bytes. An address is 20, so it has to be left-padded to match or it
+     * silently matches nothing -- the node does not consider a short topic an error, it
+     * considers it a filter that nothing satisfies. Use topicForAddress().
+     *
+     * @param array<int, string|array<int, string>|null> $topics
+     * @return array<int, array<string, mixed>>
+     */
+    public function getLogs(int $fromBlock, int $toBlock, string|array|null $address = null, array $topics = []): array
+    {
+        $filter = [
+            'fromBlock' => '0x' . dechex($fromBlock),
+            'toBlock' => '0x' . dechex($toBlock),
+        ];
+
+        if ($address !== null) {
+            $filter['address'] = $address;
+        }
+
+        if ($topics !== []) {
+            $filter['topics'] = $topics;
+        }
+
+        return $this->request('eth_getLogs', [$filter]) ?: [];
+    }
+
+    /**
+     * An address as a 32-byte topic.
+     *
+     * Left-padded to 32 bytes because that is what an indexed `address` parameter occupies in
+     * a log topic. Passing the bare 20-byte address matches nothing and reports no error.
+     */
+    public static function topicForAddress(string $address): string
+    {
+        return '0x' . str_pad(strtolower(ltrim($address, '0x')), 64, '0', STR_PAD_LEFT);
+    }
+
     /** Receipt for a transaction, or null while it is still pending. */
     public function transactionReceipt(string $hash): ?array
     {
