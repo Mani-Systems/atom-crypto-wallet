@@ -305,4 +305,32 @@ class EvmWalletTest extends TestCase
     {
         $this->assertSame(19088743, $this->clientReturning(['0x1234567'])->blockNumber());
     }
+
+    public function test_a_call_carries_the_sender_when_one_is_given(): void
+    {
+        // Without `from`, msg.sender inside the contract is the ZERO ADDRESS, and an ERC-20
+        // asked to simulate a transfer that way reverts with "transfer from the zero address"
+        // -- which reads like a broken contract and is really a missing argument. Simulating
+        // a transfer before a wallet can afford to send one depends on this.
+        $container = [];
+        $stack = HandlerStack::create(new MockHandler([
+            new Response(200, [], json_encode(['jsonrpc' => '2.0', 'id' => 1, 'result' => '0x1'])),
+            new Response(200, [], json_encode(['jsonrpc' => '2.0', 'id' => 1, 'result' => '0x1'])),
+        ]));
+        $stack->push(\GuzzleHttp\Middleware::history($container));
+
+        $client = new EvmClient('http://stub', self::BASE_CHAIN_ID, new Client(['handler' => $stack]), 0);
+
+        $client->call('0xtoken', '0xdata', '0xsender');
+        $withFrom = json_decode((string) $container[0]['request']->getBody(), true)['params'][0];
+
+        $this->assertSame('0xsender', $withFrom['from']);
+
+        // And omitted entirely when not given, rather than sent as null or an empty string:
+        // some nodes reject a malformed `from` outright.
+        $client->call('0xtoken', '0xdata');
+        $without = json_decode((string) $container[1]['request']->getBody(), true)['params'][0];
+
+        $this->assertArrayNotHasKey('from', $without);
+    }
 }

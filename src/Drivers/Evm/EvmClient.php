@@ -78,10 +78,28 @@ class EvmClient
         return $this->hexToDecimal($this->request('eth_getBalance', [$address, 'latest']));
     }
 
-    /** Read-only contract call. Returns hex-encoded return data. */
-    public function call(string $to, string $data): string
+    /**
+     * Read-only contract call. Returns hex-encoded return data.
+     *
+     * $from is optional but rarely irrelevant. eth_call executes the contract for real, so
+     * anything the contract decides based on msg.sender decides it here too -- and omitting
+     * the sender means msg.sender is the ZERO ADDRESS. An ERC-20 asked to simulate a transfer
+     * that way reverts with "transfer from the zero address", which reads like a broken
+     * contract and is really a missing argument.
+     *
+     * That makes this the cheapest way to answer "would this transfer work": real bytecode,
+     * real balances, no gas, nothing broadcast. Worth having when a wallet cannot yet afford
+     * to send anything.
+     */
+    public function call(string $to, string $data, ?string $from = null): string
     {
-        return $this->request('eth_call', [['to' => $to, 'data' => $data], 'latest']);
+        $params = ['to' => $to, 'data' => $data];
+
+        if ($from !== null) {
+            $params['from'] = $from;
+        }
+
+        return $this->request('eth_call', [$params, 'latest']);
     }
 
     /** Estimated gas units for a call, as an integer. */
